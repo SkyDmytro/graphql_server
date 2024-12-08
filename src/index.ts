@@ -1,18 +1,10 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import { typeDefs } from './schemas/tasksSchema';
 
-const server = new ApolloServer({
-  typeDefs: `
-    type Query {
-      hello: String
-    }
-  `,
-  resolvers: {
-    Query: {
-      hello: () => 'Hello world!',
-    },
-  },
-});
+import { resolvers } from './resolvers/tasksResolver';
+
+const server = new ApolloServer({ typeDefs, resolvers });
 
 async function startServer() {
   const { url } = await startStandaloneServer(server, {
