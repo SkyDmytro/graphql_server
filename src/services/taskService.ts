@@ -74,7 +74,6 @@ export const deleteAllTasks = () => () => {
   return [];
 };
 
-// Отметить все задачи как завершенные
 export const markAllTasksCompleted = (tasks: Task[]) => () => {
   return tasks.map((task) => ({ ...task, completed: true }));
 };
