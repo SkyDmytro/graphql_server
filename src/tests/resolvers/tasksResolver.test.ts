@@ -130,19 +130,19 @@ describe('Todo Resolvers', () => {
     test('Mark all tasks as completed', () => {
       const createTask = resolvers.Mutation.createTask;
       const markAllCompleted = resolvers.Mutation.markAllTasksCompleted;
-
-      createTask(null, { input: createTestTask({ completed: false }) });
-      createTask(null, { input: createTestTask({ completed: false }) });
-      createTask(null, { input: createTestTask({ completed: false }) });
-
       const getTasks = resolvers.Query.tasks;
 
-      const updatedCount = markAllCompleted();
-
-      expect(updatedCount).toBe(3);
+      createTask(null, { input: createTestTask({ completed: false }) });
+      createTask(null, { input: createTestTask({ completed: false }) });
+      createTask(null, { input: createTestTask({ completed: false }) });
 
       const completedTasks = getTasks(null, { completed: true });
-      expect(completedTasks.length).toBe(3);
+      expect(completedTasks.length).toBe(0);
+
+      markAllCompleted();
+
+      const updatedTasks = getTasks(null, { completed: true });
+      expect(updatedTasks.length).toBe(3);
     });
   });
 });

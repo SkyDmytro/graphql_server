@@ -81,11 +81,10 @@ export const resolvers = {
     },
 
     markAllTasksCompleted: () => {
-      const uncompletedTasks = tasks.filter((task) => !task.completed);
       tasks.forEach((task) => {
         task.completed = true;
       });
-      return uncompletedTasks.length;
+      return true;
     },
   },
 };
