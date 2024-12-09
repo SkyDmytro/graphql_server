@@ -67,10 +67,11 @@ describe('Todo Resolvers', () => {
         id: initialTask.id,
         input: updateInput,
       });
+      expect(updateTask).toBeDefined();
 
-      expect(updatedTask.title).toBe('Updated Task');
-      expect(updatedTask.description).toBe('Updated Description');
-      expect(updatedTask.completed).toBe(true);
+      expect(updatedTask?.title).toBe('Updated Task');
+      expect(updatedTask?.description).toBe('Updated Description');
+      expect(updatedTask?.completed).toBe(true);
     });
 
     test('Fail to update non-existent task', () => {

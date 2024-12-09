@@ -1,90 +1,43 @@
-import { v4 as uuidv4 } from 'uuid';
-import { Task, TaskInput, TaskFilters } from '../types/tasksType';
-import { validateTaskInput, matchesFilters } from '../utils/functions';
+import {
+  createTask,
+  deleteAllTasks,
+  deleteTask,
+  getAllTasks,
+  getTaskById,
+  markAllTasksCompleted,
+  updateTask,
+} from '../services/taskService';
+import { Task, TaskFilters, TaskInput } from '../types/tasksType';
 
-const tasks: Task[] = [];
+let tasks: Task[] = [];
 
 export const resolvers = {
   Query: {
-    tasks: (
-      _: unknown,
-      {
-        completed,
-        startDate,
-        endDate,
-        page = 1,
-        pageSize = 10,
-      }: TaskFilters & { page?: number; pageSize?: number },
-    ) => {
-      let filteredTasks = tasks.filter((task) =>
-        matchesFilters(task, { completed, startDate, endDate }),
-      );
-
-      const startIndex = (page - 1) * pageSize;
-      const endIndex = startIndex + pageSize;
-      return filteredTasks.slice(startIndex, endIndex);
-    },
-
-    task: (_: unknown, { id }: { id: string }) => {
-      const task = tasks.find((t) => t.id === id);
-      if (!task) {
-        throw new Error(`Task with ID ${id} not found`);
-      }
-      return task;
-    },
+    tasks: (_: unknown, args: TaskFilters & { page?: number; pageSize?: number }) =>
+      getAllTasks(tasks)(_, args),
+    task: (_: unknown, args: { id: string }) => getTaskById(tasks)(_, args),
   },
 
   Mutation: {
-    createTask: (_: unknown, { input }: { input: TaskInput }) => {
-      validateTaskInput(input);
-
-      const newTask: Task = {
-        id: uuidv4(),
-        ...input,
-        completed: input.completed || false,
-      };
-
-      tasks.push(newTask);
-      return newTask;
+    createTask: (_: unknown, args: { input: TaskInput }) => {
+      tasks = createTask(tasks)(_, args);
+      return tasks[tasks.length - 1];
     },
-
-    updateTask: (_: unknown, { id, input }: { id: string; input: TaskInput }) => {
-      validateTaskInput(input);
-
-      const taskIndex = tasks.findIndex((t) => t.id === id);
-      if (taskIndex === -1) {
-        throw new Error(`Task with ID ${id} not found`);
-      }
-
-      const updatedTask = {
-        ...tasks[taskIndex],
-        ...input,
-      };
-
-      tasks[taskIndex] = updatedTask;
-      return updatedTask;
+    updateTask: (_: unknown, args: { id: string; input: TaskInput }) => {
+      tasks = updateTask(tasks)(_, args);
+      return tasks.find((task) => task.id === args.id);
     },
-
-    deleteTask: (_: unknown, { id }: { id: string }) => {
-      const taskIndex = tasks.findIndex((t) => t.id === id);
-      if (taskIndex === -1) {
-        throw new Error(`Task with ID ${id} not found`);
-      }
-
-      tasks.splice(taskIndex, 1);
+    deleteTask: (_: unknown, args: { id: string }) => {
+      tasks = deleteTask(tasks)(_, args);
       return true;
     },
-
     deleteAllTasks: () => {
-      tasks.splice(0, tasks.length);
+      tasks = deleteAllTasks()();
       return true;
     },
-
     markAllTasksCompleted: () => {
-      tasks.forEach((task) => {
-        task.completed = true;
-      });
-      return true;
+      tasks = markAllTasksCompleted(tasks)();
+      return tasks.length;
     },
   },
 };
