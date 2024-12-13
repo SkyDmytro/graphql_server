@@ -24,8 +24,9 @@ export const resolvers = {
       return tasks[tasks.length - 1];
     },
     updateTask: (_: unknown, args: { id: string; input: TaskInput }) => {
-      tasks = updateTask(tasks)(_, args);
-      return tasks.find((task) => task.id === args.id);
+      // tasks = 
+      return updateTask(tasks)(_, args);
+      // return tasks.find((task) => task.id === args.id);
     },
     deleteTask: (_: unknown, args: { id: string }) => {
       tasks = deleteTask(tasks)(_, args);

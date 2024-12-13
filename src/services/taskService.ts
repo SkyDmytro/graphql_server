@@ -55,9 +55,11 @@ export const updateTask =
     if (taskIndex === -1) {
       throw new Error(`Task with ID ${id} not found`);
     }
+    tasks[taskIndex] = { ...tasks[taskIndex], ...input };
+    return tasks[taskIndex];
 
-    const updatedTask = { ...tasks[taskIndex], ...input };
-    return tasks.map((task, index) => (index === taskIndex ? updatedTask : task));
+    // const updatedTask = { ...tasks[taskIndex], ...input };
+    // return tasks.map((task, index) => (index === taskIndex ? updatedTask : task));
   };
 
 export const deleteTask =
