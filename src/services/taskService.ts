@@ -57,9 +57,6 @@ export const updateTask =
     }
     tasks[taskIndex] = { ...tasks[taskIndex], ...input };
     return tasks[taskIndex];
-
-    // const updatedTask = { ...tasks[taskIndex], ...input };
-    // return tasks.map((task, index) => (index === taskIndex ? updatedTask : task));
   };
 
 export const deleteTask =
